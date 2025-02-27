@@ -3,7 +3,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class Game {
-    private static final int BOARD_WIDTH = 30;
+    private static final int BOARD_WIDTH = 10; // 缩小宽度以适应窗口
     private static final int BOARD_HEIGHT = 20;
 
     private static final int DROP_DELAY = 1000; // 初始延迟 1 秒
@@ -35,13 +35,16 @@ public class Game {
                 } else {
                     updateBlockToBoard();
                 }
-                renderBoard();
             }
         }, DROP_DELAY, DROP_INTERVAL);
     }
 
     public Block getCurrentBlock() {
         return currentBlock;
+    }
+
+    public short[][] getBoard() {
+        return board;
     }
 
     private void generateNewBlock() {
@@ -121,44 +124,5 @@ public class Game {
         for (int j = 0; j < BOARD_WIDTH; j++) {
             board[k][j] = board[i][j];
         }
-    }
-
-    public void renderBoard() {
-        for (int i = 0; i < BOARD_HEIGHT; i++) {
-            for (int j = 0; j < BOARD_WIDTH; j++) {
-                boolean isBlock = checkWhetherOccupied(i, j);
-                if (isBlock) {
-                    System.out.print("*");
-                } else if (board[i][j] == 1) {
-                    System.out.print("*");
-                } else {
-                    if (i == 0
-                            || j == 0
-                            || i == BOARD_HEIGHT - 1
-                            || j == BOARD_WIDTH - 1) {
-                        System.out.print("=");
-                    } else {
-                        System.out.print("-");
-                    }
-                }
-            }
-            System.out.println();
-        }
-    }
-
-    private boolean checkWhetherOccupied(int i, int j) {
-        int rows = currentBlock.shape.length;
-        int cols = currentBlock.shape[0].length;
-
-        for (int k = 0; k < rows; k++) {
-            for (int l = 0; l < cols; l++) {
-                if (currentBlock.shape[k][l] == 1
-                        && currentBlock.x + l == j
-                        && currentBlock.y + k == i) {
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 }
