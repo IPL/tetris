@@ -26,8 +26,13 @@ public class Game {
 
     private void generateNewBlock() {
         short[][][] shapes = {
-                {{1, 1, 1, 1}},
-                {{1, 1}, {1, 1}},
+            {{1, 1, 1, 1}}, // I
+            {{1, 1}, {1, 1}}, // O
+            {{0, 1, 0}, {1, 1, 1}}, // T
+            {{0, 1, 1}, {1, 1, 0}}, // S
+            {{1, 1, 0}, {0, 1, 1}}, // Z
+            {{1, 0, 0}, {1, 1, 1}}, // J
+            {{0, 0, 1}, {1, 1, 1}}  // L
         };
         int index = random.nextInt(shapes.length);
         currentBlock = new Block(shapes[index], BOARD_WIDTH);
