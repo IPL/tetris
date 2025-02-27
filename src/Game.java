@@ -6,18 +6,38 @@ public class Game {
     private static final int BOARD_WIDTH = 30;
     private static final int BOARD_HEIGHT = 20;
 
-    private static final int DROP_DELAY = 1000; // 1 second
-    private static final int DROP_INTERVAL = 2000; // 2 seconds
+    private static final int DROP_DELAY = 1000; // 初始延迟 1 秒
+    private static final int DROP_INTERVAL = 1000; // 下落间隔 1 秒
 
     private final short[][] board;
     private Block currentBlock;
 
     private final Random random;
+    private final Timer timer;
 
-    Game(){
+    Game() {
         board = new short[BOARD_HEIGHT][BOARD_WIDTH];
         random = new Random();
+        timer = new Timer();
         generateNewBlock();
+        startAutoDrop();
+    }
+
+    /**
+     * 启动自动下落定时器
+     */
+    private void startAutoDrop() {
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                if (checkValidMove(0, 1)) {
+                    currentBlock.moveDown();
+                } else {
+                    updateBlockToBoard();
+                }
+                renderBoard();
+            }
+        }, DROP_DELAY, DROP_INTERVAL);
     }
 
     public Block getCurrentBlock() {
@@ -26,13 +46,13 @@ public class Game {
 
     private void generateNewBlock() {
         short[][][] shapes = {
-            {{1, 1, 1, 1}}, // I
-            {{1, 1}, {1, 1}}, // O
-            {{0, 1, 0}, {1, 1, 1}}, // T
-            {{0, 1, 1}, {1, 1, 0}}, // S
-            {{1, 1, 0}, {0, 1, 1}}, // Z
-            {{1, 0, 0}, {1, 1, 1}}, // J
-            {{0, 0, 1}, {1, 1, 1}}  // L
+                {{1, 1, 1, 1}}, // I
+                {{1, 1}, {1, 1}}, // O
+                {{0, 1, 0}, {1, 1, 1}}, // T
+                {{0, 1, 1}, {1, 1, 0}}, // S
+                {{1, 1, 0}, {0, 1, 1}}, // Z
+                {{1, 0, 0}, {1, 1, 1}}, // J
+                {{0, 0, 1}, {1, 1, 1}}  // L
         };
         int index = random.nextInt(shapes.length);
         currentBlock = new Block(shapes[index], BOARD_WIDTH);
@@ -115,7 +135,7 @@ public class Game {
                     if (i == 0
                             || j == 0
                             || i == BOARD_HEIGHT - 1
-                            || j == BOARD_WIDTH -1) {
+                            || j == BOARD_WIDTH - 1) {
                         System.out.print("=");
                     } else {
                         System.out.print("-");
