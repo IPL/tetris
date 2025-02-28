@@ -13,13 +13,23 @@ public class Game {
     private final short[][] board;
     private Block currentBlock;
 
-    private final Random random;
-    private final Timer timer;
+    private static final Random random = new Random(12345); // 静态随机数生成器，使用固定种子
+    private static final Timer timer = new Timer(); // 静态定时器
+
+    private static final short[][][] shapes = {
+            {{1, 1, 1, 1}}, // I
+            {{1, 1}, {1, 1}}, // O
+            {{0, 1, 0}, {1, 1, 1}}, // T
+            {{0, 1, 1}, {1, 1, 0}}, // S
+            {{1, 1, 0}, {0, 1, 1}}, // Z
+            {{1, 0, 0}, {1, 1, 1}}, // J
+            {{0, 0, 1}, {1, 1, 1}}  // L
+    };
+
+    private static int shapeIndex = 0; // 静态索引，用于同步方块生成
 
     Game() {
         board = new short[BOARD_HEIGHT][BOARD_WIDTH];
-        random = new Random();
-        timer = new Timer();
         generateNewBlock();
         startAutoDrop();
     }
@@ -33,7 +43,6 @@ public class Game {
                 } else {
                     updateBlockToBoard();
                 }
-                // 刷新界面
                 SwingUtilities.invokeLater(() -> {
                     if (gamePanel != null) {
                         gamePanel.repaint();
@@ -52,19 +61,12 @@ public class Game {
     }
 
     private void generateNewBlock() {
-        short[][][] shapes = {
-                {{1, 1, 1, 1}}, // I
-                {{1, 1}, {1, 1}}, // O
-                {{0, 1, 0}, {1, 1, 1}}, // T
-                {{0, 1, 1}, {1, 1, 0}}, // S
-                {{1, 1, 0}, {0, 1, 1}}, // Z
-                {{1, 0, 0}, {1, 1, 1}}, // J
-                {{0, 0, 1}, {1, 1, 1}}  // L
-        };
-        int index = random.nextInt(shapes.length);
-        currentBlock = new Block(shapes[index], BOARD_WIDTH);
+        // 使用静态索引生成方块
+        currentBlock = new Block(shapes[shapeIndex], BOARD_WIDTH);
+        shapeIndex = (shapeIndex + 1) % shapes.length; // 循环使用方块
     }
 
+    // 其他方法保持不变...
     public boolean checkValidMove(Block block, int deltaX, int deltaY) {
         int rows = block.shape.length;
         int cols = block.shape[0].length;
