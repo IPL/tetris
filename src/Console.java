@@ -16,6 +16,7 @@ public class Console extends Frame implements KeyListener {
 
         game = new Game();
         gamePanel = new GamePanel(game);
+        game.setGamePanel(gamePanel); // 设置 GamePanel
         add(gamePanel, BorderLayout.CENTER);
 
         addWindowListener(new WindowAdapter() {

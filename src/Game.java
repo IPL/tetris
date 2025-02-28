@@ -1,9 +1,10 @@
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
+import javax.swing.SwingUtilities;
 
 public class Game {
-    private static final int BOARD_WIDTH = 10; // 缩小宽度以适应窗口
+    private static final int BOARD_WIDTH = 10;
     private static final int BOARD_HEIGHT = 20;
 
     private static final int DROP_DELAY = 1000; // 初始延迟 1 秒
@@ -23,9 +24,6 @@ public class Game {
         startAutoDrop();
     }
 
-    /**
-     * 启动自动下落定时器
-     */
     private void startAutoDrop() {
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
@@ -35,6 +33,12 @@ public class Game {
                 } else {
                     updateBlockToBoard();
                 }
+                // 刷新界面
+                SwingUtilities.invokeLater(() -> {
+                    if (gamePanel != null) {
+                        gamePanel.repaint();
+                    }
+                });
             }
         }, DROP_DELAY, DROP_INTERVAL);
     }
@@ -124,5 +128,11 @@ public class Game {
         for (int j = 0; j < BOARD_WIDTH; j++) {
             board[k][j] = board[i][j];
         }
+    }
+
+    private GamePanel gamePanel;
+
+    public void setGamePanel(GamePanel gamePanel) {
+        this.gamePanel = gamePanel;
     }
 }
