@@ -21,6 +21,8 @@ public class Console extends Frame implements KeyListener {
         game2 = new Game();
         gamePanel1 = new GamePanel(game1);
         gamePanel2 = new GamePanel(game2);
+        game1.setGamePanel(gamePanel1); // 设置 GamePanel
+        game2.setGamePanel(gamePanel2); // 设置 GamePanel
 
         // 将两个游戏面板添加到窗口中
         add(gamePanel1);
